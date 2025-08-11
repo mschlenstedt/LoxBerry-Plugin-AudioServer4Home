@@ -1,0 +1,8 @@
+{
+   "mass" : {
+      "release" : "latest"
+   },
+   "mqtt" : {
+      "topic" : "musicserver4home"
+   }
+}

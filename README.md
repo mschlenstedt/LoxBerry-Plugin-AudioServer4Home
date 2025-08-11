@@ -1,2 +1,2 @@
-# LoxBerry-Plugin-Musicserver4Home-NG
-A LoxBerry Plugin
+# LoxBerry-Plugin-LoxBuddy
+A LoxBerry Plugin. LoxWiki: https://wiki.loxberry.de
