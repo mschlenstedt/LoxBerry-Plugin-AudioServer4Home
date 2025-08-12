@@ -1,6 +1,10 @@
 {
    "mass" : {
-      "release" : "latest"
+      "release" : "latest",
+      "host" : "localhost",
+      "port" : 8095,
+      "protocol" : "http",
+      "internal" : 1
    },
    "mqtt" : {
       "topic" : "musicserver4home"

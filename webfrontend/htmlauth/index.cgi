@@ -23,11 +23,9 @@
 # use CGI::Carp qw(fatalsToBrowser);
 use CGI;
 use LoxBerry::System;
-#use LoxBerry::Web;
+use LoxBerry::Web;
 use LoxBerry::JSON; # Available with LoxBerry 2.0
-#require "$lbpbindir/libs/LoxBerry/JSON.pm";
 use LoxBerry::Log;
-#use Time::HiRes qw ( sleep );
 use warnings;
 use strict;
 #use Data::Dumper;
@@ -50,8 +48,10 @@ my $templateout;
 # Language Phrases
 my %L;
 
-
-require LoxBerry::Web;
+# Load config
+my $cfgfile = "$lbpconfigdir/plugin.json";
+my $jsonobj = LoxBerry::JSON->new();
+my $cfg = $jsonobj->open(filename => $cfgfile, readonly => 1);
 
 # Default is loxbuddy_settings form
 $q->{form} = "playermanager" if !$q->{form};
@@ -60,6 +60,11 @@ if ($q->{form} eq "playermanager") {
 	$templatefile = "$lbptemplatedir/playermanager.html";
 	$template = LoxBerry::System::read_file($templatefile);
 	&form_playermanager();
+}
+elsif ($q->{form} eq "mass") {
+	$templatefile = "$lbptemplatedir/musicassistent.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_mass();
 }
 elsif ($q->{form} eq "gateway") {
 	$templatefile = "$lbptemplatedir/gateway.html";
@@ -92,6 +97,18 @@ exit;
 ##########################################################################
 
 sub form_playermanager
+{
+	# Prepare template
+	&preparetemplate();
+
+	return();
+}
+
+##########################################################################
+# Form: Music Assistent
+##########################################################################
+
+sub form_mass
 {
 	# Prepare template
 	&preparetemplate();
@@ -159,6 +176,14 @@ sub preparetemplate
 	# Language File
 	%L = LoxBerry::System::readlanguage($templateout, "language.ini");
 	
+	# Url for MASS Webui
+	my $massurl;
+	if ( $cfg->{mass}->{internal} ) {
+		$massurl =  "http://" . LoxBerry::System::get_localip() . ":8095";
+	} else {
+		$massurl = $cfg->{mass}->{protocol} . "://" . $cfg->{mass}->{host} . ":" . $cfg->{mass}->{port};
+	}
+
 	# Navbar
 	our %navbar;
 
@@ -166,17 +191,21 @@ sub preparetemplate
 	$navbar{20}{URL} = 'index.cgi?form=playermanager';
 	$navbar{20}{active} = 1 if $q->{form} eq "playermanager";
 
-	$navbar{30}{Name} = "$L{'COMMON.LABEL_GATEWAY'}";
-	$navbar{30}{URL} = 'index.cgi?form=gateway';
-	$navbar{30}{active} = 1 if $q->{form} eq "gateway";
+	$navbar{30}{Name} = "$L{'COMMON.LABEL_MASS'}";
+	$navbar{30}{URL} = 'index.cgi?form=mass';
+	$navbar{30}{active} = 1 if $q->{form} eq "mass";
 
-	$navbar{40}{Name} = "$L{'COMMON.LABEL_TEXT2SPEECH'}";
-	$navbar{40}{URL} = 'index.cgi?form=text2speech';
-	$navbar{40}{active} = 1 if $q->{form} eq "text2speech";
+	$navbar{40}{Name} = "$L{'COMMON.LABEL_GATEWAY'}";
+	$navbar{40}{URL} = 'index.cgi?form=gateway';
+	$navbar{40}{active} = 1 if $q->{form} eq "gateway";
 
-	$navbar{50}{Name} = "$L{'COMMON.LABEL_MASS'}";
-	$navbar{50}{URL} = 'http://' . LoxBerry::System::get_localip() . ':8095';
-	$navbar{50}{target} = '_blank';
+	$navbar{50}{Name} = "$L{'COMMON.LABEL_TEXT2SPEECH'}";
+	$navbar{50}{URL} = 'index.cgi?form=text2speech';
+	$navbar{50}{active} = 1 if $q->{form} eq "text2speech";
+
+	$navbar{60}{Name} = "$L{'COMMON.LABEL_MASS_WEBUI'}";
+	$navbar{60}{URL} = "$massurl";
+	$navbar{60}{target} = '_blank';
 	
 	$navbar{98}{Name} = "$L{'COMMON.LABEL_LOGS'}";
 	$navbar{98}{URL} = 'index.cgi?form=logs';

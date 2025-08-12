@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Install docker on next reboot
+which docker > /dev/null
+if [ $? -ne 0 ]; then
+	echo "Installing Docker..."
+	/boot/dietpi/dietpi-software reinstall 162
+fi
+
+REPLACELBPBINDIR/mass_watchdog.pl --action=check --verbose=1

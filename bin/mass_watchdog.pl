@@ -109,13 +109,21 @@ sub start
 
 	LOGINF "Starting Music Assistent...";
 
+	my $cfgfile = $lbpplugindir."/plugin.json";
+	my $jsonobj = LoxBerry::JSON->new();
+	$cfg = $jsonobj->open(filename => $cfgfile);
+	my $release = $cfg->{mass}->{release};
+	if ( !$release) {
+		$release = "latest";
+	}
+
 	#my $child_pid = fork();
 	#die "Couldn't fork" unless defined $child_pid;
 	#if (! $child_pid) {
 	#	exec "sudo docker run -v test:/data --name musicassistent --network host --cap-add=DAC_READ_SEARCH --cap-add=SYS_ADMIN --security-opt apparmor:unconfined ghcr.io/music-assistant/server:$release > /dev/null 2>&1 &";
 	#	die "Couldn't exec Music Assistent: $!";
 	#}
-	my $output = `sudo docker run -v $lbpplugindir:/data --detach --name musicassistent --network host --cap-add=DAC_READ_SEARCH --cap-add=SYS_ADMIN --security-opt apparmor:unconfined ghcr.io/music-assistant/server:latest 2>&1`;
+	my $output = `sudo docker run -v $lbpplugindir:/data --detach --name musicassistent --network host --cap-add=DAC_READ_SEARCH --cap-add=SYS_ADMIN --security-opt apparmor:unconfined ghcr.io/music-assistant/server:$release 2>&1`;
 	chomp ($output);
 
 	my $count = `sudo docker ps | grep -c musicassistent`;

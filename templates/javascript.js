@@ -6,11 +6,11 @@ $(function() {
 		interval = window.setInterval(function(){ massservicestatus(); }, 5000);
 	}
 	massservicestatus();
-//	getconfig();
+	getconfig();
 
 });
 
-// SERVICE STATE
+// MASS SERVICE STATE
 
 function massservicestatus(update) {
 
@@ -34,7 +34,7 @@ function massservicestatus(update) {
 	.done(function( data ) {
 		console.log( "Servicestatus Success", data );
 		if (data.pid) {
-			$("#massservicestatus").attr("style", "background:#6dac20; color:black").html("<TMPL_VAR "COMMON.HINT_RUNNING"> <span class='small'>ID: " + data.pid + "</span>");
+			$("#massservicestatus").attr("style", "background:#6dac20; color:black").html("<span class='small'>ID: " + data.pid + "</span>");
 			$("#massservicestatusicon").html("<img src='./images/check_20.png'>");
 		} else {
 			$("#massservicestatus").attr("style", "background:#FF6339; color:black").html("<TMPL_VAR "COMMON.HINT_STOPPED">");
@@ -46,7 +46,7 @@ function massservicestatus(update) {
 	});
 }
 
-// SERVICE RESTART
+// MASS SERVICE RESTART
 
 function massservicerestart() {
 
@@ -77,7 +77,7 @@ function massservicerestart() {
 	});
 }
 
-// SERVICE STOP
+// MASS SERVICE STOP
 
 function massservicestop() {
 
@@ -106,6 +106,46 @@ function massservicestop() {
 	.always(function( data ) {
 		console.log( "Servicestop Finished", data );
 	});
+}
+
+// MASS Open WebUI
+
+function openMASS() {
+	window.open( $("#massurl").val(), "_blank" );
+}
+
+// PLUGIN GET CONFIG
+
+function getconfig() {
+
+	// Ajax request
+	$.ajax({ 
+		url:  'ajax.cgi',
+		type: 'POST',
+		data: {
+			action: 'getconfig'
+		}
+	})
+	.fail(function( data ) {
+		console.log( "getconfig Fail", data );
+	})
+	.done(function( data ) {
+		console.log( "getconfig Success", data );
+		$("#main").css( 'visibility', 'visible' );
+
+		// Settings
+	//window.open( location.protocol + '//' + location.hostname + ':' + $("#masshttpport").val(), "_blank" );
+		$("#massport").val(data.mass.port);
+		if ( data.mass.internal ) {
+			$("#massurl").val(location.protocol + '//' + location.hostname + ':8095' );
+		} else {
+			$("#massurl").val( data.mass.protocol + "://" + data.mass.host + ":" + data.mass.port );
+		}
+	})
+	.always(function( data ) {
+		console.log( "getconfig Finished" );
+	})
+
 }
 
 // Save SETTINGS (save to config)
@@ -209,73 +249,5 @@ function save_settings() {
 
 }
 
-// GET CONFIG
-
-function getconfig() {
-
-	// Ajax request
-	$.ajax({ 
-		url:  'ajax.cgi',
-		type: 'POST',
-		data: {
-			action: 'getconfig'
-		}
-	})
-	.fail(function( data ) {
-		console.log( "getconfig Fail", data );
-	})
-	.done(function( data ) {
-		console.log( "getconfig Success", data );
-		$("#main").css( 'visibility', 'visible' );
-
-		// Sensors
-		sensors = data.sensors;
-		if ( data.error || jQuery.isEmptyObject(sensors)) {
-			sensors = undefined;
-		} else {
-			$.each( sensors, function( name, item){
-				$("#"+name+"_topic").val(item.topic);
-			})
-			$("#pressure_height").val(sensors.pressure.height);
-			if ( sensors.illuminance.calc_sr == "1" ) {
-				$("#illuminance_calc_sr").prop('checked', true).checkboxradio('refresh');
-			}
-			$("#twilight_max").val(sensors.twilight.max);
-			$("#solarradiation_max").val(sensors.solarradiation.max);
-			$("#solarradiation_offset").val(sensors.solarradiation.offset);
-			const wdir = [];
-			const orderedct = Object.keys(sensors.winddir.converttable).sort().reduce(
-				(obj, key) => {
-					obj[key] = sensors.winddir.converttable[key];
-					return obj;
-				},
-				{}
-			);
-			$.each(orderedct, function( volt, direction){
-				if (wdir.includes(direction) == true) {
-					$("#winddir_"+direction+"_2").val(volt);
-				} else {
-					$("#winddir_"+direction+"_1").val(volt);
-				}
-				wdir.push(direction);
-			})
-			if ( sensors.rainstate.calc_rr == "1" ) {
-				$("#rainstate_calc_rr").prop('checked', true).checkboxradio('refresh');
-			}
-		}
-		// Settings
-		$("#statuscycle_settings").val(data.statuscycle);
-		$("#valuescycle_settings").val(data.valuecycle);
-		$("#topic_settings").val(data.topic);
-		$("#active_lcd").prop('checked', true).checkboxradio('refresh');
-	})
-	.always(function( data ) {
-		console.log( "getconfig Finished" );
-		if (document.getElementById("calibration_overview")) {
-			measurements();
-		}
-	})
-
-}
 */
 </script>

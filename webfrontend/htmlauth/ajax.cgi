@@ -50,24 +50,15 @@ if( $q->{action} eq "massservicestatus" ) {
 	$response = encode_json( \%response );
 }
 
-#if( $q->{action} eq "getconfig" ) {
-#	# From https://gist.github.com/theimpostor/79d4d37876aa990edd2ebc0e1d9391b5
-#	require Hash::Merge;
-#	Hash::Merge->import("merge");
-#	my $merged = {};
-#	my $json = JSON->new->utf8;
-#	if ( -e "$lbpconfigdir/plugin.json" ) {
-#		$merged = merge( $merged, $json->decode( LoxBerry::System::read_file("$lbpconfigdir/plugin.json") ) );
-#	}
-#	if ( -e "$lbpdatadir/calibration.json" ) {
-#		$merged = merge( $merged, $json->decode( LoxBerry::System::read_file("$lbpdatadir/calibration.json") ) );
-#	}
-#	if( !$merged ) {
-#		$response = "{ }";
-#	} else {
-#		$response = $json->encode( $merged );
-#	}
-#}
+# Get config
+if( $q->{action} eq "getconfig" ) {
+	# Load config
+	require LoxBerry::JSON;
+	my $cfgfile = "$lbpconfigdir/plugin.json";
+	my $jsonobj = LoxBerry::JSON->new();
+	my $cfg = $jsonobj->open(filename => $cfgfile, readonly => 1);
+	$response = encode_json( $cfg );
+}
 
 #if( $q->{action} eq "savesettings" ) {
 #
@@ -117,7 +108,7 @@ elsif ( defined $error and $error ne "" ) {
 else {
 	print "Status: 501 Not implemented\r\n";
 	print "Content-type: application/json; charset=utf-8\r\n\r\n";
-	$error = "Action ".$q->{action}." unknown";
+	$error = "Action ". $q->{action} . " unknown";
 	#LOGCRIT "Method not implemented - responding with HTTP 501";
 	print to_json( { error => $error } );
 }
