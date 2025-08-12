@@ -218,9 +218,9 @@ sub printtemplate
 {
 
 	# Print out Template
-	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/musicserver4home-ng/start", "");
+	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/audioserver4home/start", "");
 	# Print your plugins notifications with name daemon.
-	print LoxBerry::Log::get_notifications_html($lbpplugindir, 'ms4h');
+	print LoxBerry::Log::get_notifications_html($lbpplugindir, 'audioserver4home');
 	print $templateout->output();
 	LoxBerry::Web::lbfooter();
 	

@@ -23,7 +23,6 @@ my $q = $cgi->Vars;
 #LOGSTART "Request $q->{action}";
 
 if( $q->{action} eq "massservicerestart" ) {
-	# We have to start in background mode because watchdog uses fork
 	system ("$lbpbindir/mass_watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1 &");
 	my $resp = $?;
 	sleep(1);

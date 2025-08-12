@@ -7,6 +7,6 @@
       "internal" : 1
    },
    "mqtt" : {
-      "topic" : "musicserver4home"
+      "topic" : "audioserver4home"
    }
 }
