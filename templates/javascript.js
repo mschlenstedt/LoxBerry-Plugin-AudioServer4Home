@@ -2,43 +2,43 @@
 
 $(function() {
 	
-	if (document.getElementById("servicestatus")) {
-		interval = window.setInterval(function(){ servicestatus(); }, 5000);
+	if (document.getElementById("massservicestatus")) {
+		interval = window.setInterval(function(){ massservicestatus(); }, 5000);
 	}
-	servicestatus();
+	massservicestatus();
 //	getconfig();
 
 });
 
 // SERVICE STATE
 
-function servicestatus(update) {
+function massservicestatus(update) {
 
 	if (update) {
-		$("#servicestatus").attr("style", "background:#dfdfdf").html("<TMPL_VAR "COMMON.HINT_UPDATING">");
-		$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+		$("#massservicestatus").attr("style", "background:#dfdfdf").html("<TMPL_VAR "COMMON.HINT_UPDATING">");
+		$("#massservicestatusicon").html("<img src='./images/unknown_20.png'>");
 	}
 
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
-				action: 'servicestatus'
+				action: 'massservicestatus'
 			}
 		} )
 	.fail(function( data ) {
 		console.log( "Servicestatus Fail", data );
-		$("#servicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
-		$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+		$("#massservicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
+		$("#massservicestatusicon").html("<img src='./images/unknown_20.png'>");
 	})
 	.done(function( data ) {
 		console.log( "Servicestatus Success", data );
 		if (data.pid) {
-			$("#servicestatus").attr("style", "background:#6dac20; color:black").html("<TMPL_VAR "COMMON.HINT_RUNNING"> <span class='small'>PID: " + data.pid + "</span>");
-			$("#servicestatusicon").html("<img src='./images/check_20.png'>");
+			$("#massservicestatus").attr("style", "background:#6dac20; color:black").html("<TMPL_VAR "COMMON.HINT_RUNNING"> <span class='small'>ID: " + data.pid + "</span>");
+			$("#massservicestatusicon").html("<img src='./images/check_20.png'>");
 		} else {
-			$("#servicestatus").attr("style", "background:#FF6339; color:black").html("<TMPL_VAR "COMMON.HINT_STOPPED">");
-			$("#servicestatusicon").html("<img src='./images/error_20.png'>");
+			$("#massservicestatus").attr("style", "background:#FF6339; color:black").html("<TMPL_VAR "COMMON.HINT_STOPPED">");
+			$("#massservicestatusicon").html("<img src='./images/error_20.png'>");
 		}
 	})
 	.always(function( data ) {
@@ -48,16 +48,16 @@ function servicestatus(update) {
 
 // SERVICE RESTART
 
-function servicerestart() {
+function massservicerestart() {
 
 	clearInterval(interval);
-	$("#servicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
-	$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+	$("#massservicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
+	$("#massservicestatusicon").html("<img src='./images/unknown_20.png'>");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
-				action: 'servicerestart'
+				action: 'massservicerestart'
 			}
 		} )
 	.fail(function( data ) {
@@ -66,11 +66,11 @@ function servicerestart() {
 	.done(function( data ) {
 		console.log( "Servicerestart Success", data );
 		if (data == "0") {
-			servicestatus(1);
+			massservicestatus(1);
 		} else {
-			$("#servicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
+			$("#massservicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
 		}
-		interval = window.setInterval(function(){ servicestatus(); }, 5000);
+		interval = window.setInterval(function(){ massservicestatus(); }, 5000);
 	})
 	.always(function( data ) {
 		console.log( "Servicerestart Finished", data );
@@ -79,16 +79,16 @@ function servicerestart() {
 
 // SERVICE STOP
 
-function servicestop() {
+function massservicestop() {
 
 	clearInterval(interval);
-	$("#servicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
-	$("#servicestatusicon").html("<img src='./images/unknown_20.png'>");
+	$("#massservicestatus").attr("style", "color:blue").html("<TMPL_VAR "COMMON.HINT_EXECUTING">");
+	$("#massservicestatusicon").html("<img src='./images/unknown_20.png'>");
 	$.ajax( { 
 			url:  'ajax.cgi',
 			type: 'POST',
 			data: { 
-				action: 'servicestop'
+				action: 'massservicestop'
 			}
 		} )
 	.fail(function( data ) {
@@ -97,11 +97,11 @@ function servicestop() {
 	.done(function( data ) {
 		console.log( "Servicestop Success", data );
 		if (data == "0") {
-			servicestatus(1);
+			massservicestatus(1);
 		} else {
-			$("#servicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
+			$("#massservicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
 		}
-		interval = window.setInterval(function(){ servicestatus(); }, 5000);
+		interval = window.setInterval(function(){ massservicestatus(); }, 5000);
 	})
 	.always(function( data ) {
 		console.log( "Servicestop Finished", data );

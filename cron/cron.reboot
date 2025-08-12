@@ -1,2 +1,2 @@
 #!/bin/bash
-REPLACELBPBINDIR/watchdog.pl --action=check --verbose=1
+REPLACELBPBINDIR/mass_watchdog.pl --action=check --verbose=1

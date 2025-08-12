@@ -22,28 +22,29 @@ my $q = $cgi->Vars;
 
 #LOGSTART "Request $q->{action}";
 
-if( $q->{action} eq "servicerestart" ) {
+if( $q->{action} eq "massservicerestart" ) {
 	# We have to start in background mode because watchdog uses fork
-	system ("$lbpbindir/watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1 &");
+	system ("$lbpbindir/mass_watchdog.pl --action=restart --verbose=0 > /dev/null 2>&1 &");
 	my $resp = $?;
 	sleep(1);
-	my $status = LoxBerry::System::lock(lockfile => 'loxbuddy-watchdog', wait => 600); # Wait until watchdog is ready...
+	my $status = LoxBerry::System::lock(lockfile => 'mass-watchdog', wait => 600); # Wait until watchdog is ready...
 	$response = $resp;
 }
 
-if( $q->{action} eq "servicestop" ) {
-	system ("$lbpbindir/watchdog.pl --action=stop --verbose=1 > /dev/null 2>&1");
+if( $q->{action} eq "massservicestop" ) {
+	system ("$lbpbindir/mass_watchdog.pl --action=stop --verbose=0 > /dev/null 2>&1");
 	$response = $?;
 }
 
-if( $q->{action} eq "servicestatus" ) {
-	my $status;
-	my $count = `pgrep -c -f "loxbuddy/node_modules/.bin/vite"`;
-	if ($count >= "2") {
-		$status = `pgrep -o -f "loxbuddy/node_modules/.bin/vite"`;
+if( $q->{action} eq "massservicestatus" ) {
+	my $id;
+	my $count = `sudo docker ps | grep -c musicassistent`;
+	if ($count >= "1") {
+		$id = `sudo docker ps | grep musicassistent | awk '{ print \$1 }'`;
+		chomp ($id);
 	}
 	my %response = (
-		pid => $status,
+		pid => $id,
 	);
 	chomp (%response);
 	$response = encode_json( \%response );

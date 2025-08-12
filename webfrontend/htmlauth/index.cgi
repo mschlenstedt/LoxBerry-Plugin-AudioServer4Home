@@ -44,52 +44,42 @@ my $q = $cgi->Vars;
 
 my $version = LoxBerry::System::pluginversion();
 my $template;
+my $templatefile;
 my $templateout;
 
 # Language Phrases
 my %L;
 
-##########################################################################
-# AJAX
-##########################################################################
 
-if( $q->{ajax} ) {
-	
-	## Handle all ajax requests 
-	require JSON;
-	# require Time::HiRes;
-	my %response;
-	ajax_header();
+require LoxBerry::Web;
 
-	exit;
+# Default is loxbuddy_settings form
+$q->{form} = "playermanager" if !$q->{form};
 
-##########################################################################
-# Normal request (not AJAX)
-##########################################################################
-
-} else {
-
-	require LoxBerry::Web;
-
-	# Default is loxbuddy_settings form
-	$q->{form} = "loxbuddy" if !$q->{form};
-
-	if ($q->{form} eq "loxbuddy") {
-		my $templatefile = "$lbptemplatedir/loxbuddy_settings.html";
-		$template = LoxBerry::System::read_file($templatefile);
-		&form_loxbuddy();
-	}
-	elsif ($q->{form} eq "logs") {
-		my $templatefile = "$lbptemplatedir/log_settings.html";
-		$template = LoxBerry::System::read_file($templatefile);
-		&form_logs();
-	}
-	else {
-		my $templatefile = "$lbptemplatedir/loxbuddy_settings.html";
-		$template = LoxBerry::System::read_file($templatefile);
-		&form_loxbuddy();
-	}
-
+if ($q->{form} eq "playermanager") {
+	$templatefile = "$lbptemplatedir/playermanager.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_playermanager();
+}
+elsif ($q->{form} eq "gateway") {
+	$templatefile = "$lbptemplatedir/gateway.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_gateway();
+}
+elsif ($q->{form} eq "text2speech") {
+	$templatefile = "$lbptemplatedir/text2speech.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_text2speech();
+}
+elsif ($q->{form} eq "logs") {
+	$templatefile = "$lbptemplatedir/log_settings.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_logs();
+}
+else {
+	$templatefile = "$lbptemplatedir/playermanager.html";
+	$template = LoxBerry::System::read_file($templatefile);
+	&form_playermanager();
 }
 
 # Print the form out
@@ -98,10 +88,34 @@ if( $q->{ajax} ) {
 exit;
 
 ##########################################################################
-# Form: Atlas
+# Form: Playermanager
 ##########################################################################
 
-sub form_loxbuddy
+sub form_playermanager
+{
+	# Prepare template
+	&preparetemplate();
+
+	return();
+}
+
+##########################################################################
+# Form: Gateway
+##########################################################################
+
+sub form_gateway
+{
+	# Prepare template
+	&preparetemplate();
+
+	return();
+}
+
+##########################################################################
+# Form: Text2Speech
+##########################################################################
+
+sub form_text2speech
 {
 	# Prepare template
 	&preparetemplate();
@@ -148,13 +162,21 @@ sub preparetemplate
 	# Navbar
 	our %navbar;
 
-	$navbar{20}{Name} = "$L{'COMMON.LABEL_LOXBUDDY'}";
-	$navbar{20}{URL} = 'index.cgi?form=loxbuddy';
-	$navbar{20}{active} = 1 if $q->{form} eq "loxbuddy";
+	$navbar{20}{Name} = "$L{'COMMON.LABEL_PLAYERMANAGER'}";
+	$navbar{20}{URL} = 'index.cgi?form=playermanager';
+	$navbar{20}{active} = 1 if $q->{form} eq "playermanager";
 
-	$navbar{30}{Name} = "$L{'COMMON.LABEL_WEBUI'}";
-	$navbar{30}{URL} = 'http://' . LoxBerry::System::get_localip() . ':5173';
-	$navbar{30}{target} = '_blank';
+	$navbar{30}{Name} = "$L{'COMMON.LABEL_GATEWAY'}";
+	$navbar{30}{URL} = 'index.cgi?form=gateway';
+	$navbar{30}{active} = 1 if $q->{form} eq "gateway";
+
+	$navbar{40}{Name} = "$L{'COMMON.LABEL_TEXT2SPEECH'}";
+	$navbar{40}{URL} = 'index.cgi?form=text2speech';
+	$navbar{40}{active} = 1 if $q->{form} eq "text2speech";
+
+	$navbar{50}{Name} = "$L{'COMMON.LABEL_MASS'}";
+	$navbar{50}{URL} = 'http://' . LoxBerry::System::get_localip() . ':8095';
+	$navbar{50}{target} = '_blank';
 	
 	$navbar{98}{Name} = "$L{'COMMON.LABEL_LOGS'}";
 	$navbar{98}{URL} = 'index.cgi?form=logs';
@@ -167,25 +189,12 @@ sub printtemplate
 {
 
 	# Print out Template
-	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/loxbuddy/start", "");
+	LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://wiki.loxberry.de/plugins/musicserver4home-ng/start", "");
 	# Print your plugins notifications with name daemon.
-	print LoxBerry::Log::get_notifications_html($lbpplugindir, 'loxbuddy');
+	print LoxBerry::Log::get_notifications_html($lbpplugindir, 'ms4h');
 	print $templateout->output();
 	LoxBerry::Web::lbfooter();
 	
 	return();
 
 }
-
-######################################################################
-# AJAX functions
-######################################################################
-
-sub ajax_header
-{
-	print $cgi->header(
-			-type => 'application/json',
-			-charset => 'utf-8',
-			-status => '200 OK',
-	);	
-}	
