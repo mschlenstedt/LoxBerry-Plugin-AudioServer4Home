@@ -1,2 +1,2 @@
-# LoxBerry-Plugin-LoxBuddy
-A LoxBerry Plugin. LoxWiki: https://wiki.loxberry.de
+# LoxBerry-Plugin-AudioServer4Home
+A LoxBerry Plugin. https://wiki.loxberry.de
