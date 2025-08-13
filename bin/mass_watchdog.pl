@@ -117,7 +117,7 @@ sub start
 		$release = "latest";
 	}
 
-	my $output = `sudo docker run -v $lbpplugindir:/data --detach --name musicassistent --network host --cap-add=DAC_READ_SEARCH --cap-add=SYS_ADMIN --security-opt apparmor:unconfined ghcr.io/music-assistant/server:$release 2>&1`;
+	my $output = `sudo docker run -v $lbpdatadir/mass:/data --detach --name musicassistent --network host --cap-add=DAC_READ_SEARCH --cap-add=SYS_ADMIN --security-opt apparmor:unconfined ghcr.io/music-assistant/server:$release 2>&1`;
 	chomp ($output);
 
 	my $count = `sudo docker ps | grep -c musicassistent`;

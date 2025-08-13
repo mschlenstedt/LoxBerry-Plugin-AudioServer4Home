@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Install docker on next reboot
-which docker > /dev/null
-if [ $? -ne 0 ]; then
-	echo "Installing Docker..."
-	/boot/dietpi/dietpi-software reinstall 162
-fi
+#which docker > /dev/null
+#if [ $? -ne 0 ]; then
+#	echo "Installing Docker..."
+#	/boot/dietpi/dietpi-software reinstall 162
+#fi
 
 # Start AS4H at Boot
 REPLACELBPBINDIR/mass_watchdog.pl --action=check --verbose=1

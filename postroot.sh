@@ -28,7 +28,7 @@ if [ $? -ne 0 ]; then
 	echo "<FAIL> Docker failed. The Plugin will not work without."
 	exit 2
 else
-	echo "<OK> Docker installation is fine."
+	echo "<OK> Docker Installation seems to be fine."
 fi
 
 # Exit with Status 0
