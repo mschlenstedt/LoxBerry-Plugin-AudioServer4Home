@@ -72,7 +72,6 @@ if __name__ == "__main__":
             client.subscribe(handle_player_added, EventType.PLAYER_UPDATED)
             while (1):
                 print ("Tick")
-                print (client.MassEvent)
                 time.sleep(5)
 
     # run the client
