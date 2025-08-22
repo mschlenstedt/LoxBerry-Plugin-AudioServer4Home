@@ -3,7 +3,7 @@
       "release" : "latest",
       "host" : "localhost",
       "port" : 8095,
-      "protocol" : "http",
+      "protocol" : "wѕ",
       "internal" : 1
    },
    "mqtt" : {
